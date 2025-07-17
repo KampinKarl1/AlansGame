@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Math Game</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .operation {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      line-height: 2.5rem;
+    }
+
+    .answer {
+      font-size: 1.2rem;
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: none;
+      width: 100px;
+      text-align: center;
+      background-color: #2a2a2a;
+      color: white;
+    }
+
+    .submit-btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background-color: #03dac6;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #00bfa5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="operation">
+      13<br>
+      − 6<br>
+      <hr style="width: 100px; margin: 0.5rem auto; border: 1px solid #444;">
+    </div>
+    <input class="answer" type="number" id="answerInput" placeholder="Your answer">
+    <br>
+    <button class="submit-btn" onclick="submitAnswer()">Submit</button>
+  </div>
+
+  <script>
+    function submitAnswer() {
+      const input = document.getElementById("answerInput").value;
+      alert("You entered: " + input);
+    }
+  </script>
+</body>
+</html>
