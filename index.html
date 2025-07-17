@@ -75,10 +75,36 @@
       margin-top: 1rem;
       font-weight: bold;
     }
+    #operatorButtons {
+  margin-bottom: 1rem;
+}
+
+.op-btn {
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  margin: 0.25rem;
+  border: none;
+  border-radius: 5px;
+  background-color: grey;
+  color: white;
+  cursor: pointer;
+}
+
+.op-btn.selected {
+  background-color: green;
+}
+
   </style>
 </head>
 <body>
   <div class="container">
+    <div id="operatorButtons">
+  <button class="op-btn selected" data-op="+">+</button>
+  <button class="op-btn selected" data-op="-">−</button>
+  <button class="op-btn selected" data-op="*">×</button>
+  <button class="op-btn selected" data-op="/">÷</button>
+</div>
+
     <div class="score" id="scoreDisplay">$0</div>
     <div class="operation" id="operationDisplay"></div>
     <input class="answer" type="number" id="answerInput" placeholder="Your answer">
@@ -90,6 +116,8 @@
   <script>
     let score = 0;
     let correctAnswer;
+const ops = getSelectedOperators();
+const randomOp = ops[Math.floor(Math.random() * ops.length)];
 
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -153,6 +181,29 @@
         result.style.color = "red";
       }
     }
+
+    const operatorButtons = document.querySelectorAll(".op-btn");
+
+operatorButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    const selectedButtons = document.querySelectorAll(".op-btn.selected");
+
+    // If only one is selected and the user tries to unselect it
+    if (button.classList.contains("selected") && selectedButtons.length === 1) {
+      alert("At least one operator must remain selected.");
+      return;
+    }
+
+    // Toggle selection
+    button.classList.toggle("selected");
+  });
+});
+
+// Helper: get currently selected operators
+function getSelectedOperators() {
+  return Array.from(document.querySelectorAll(".op-btn.selected")).map(btn => btn.dataset.op);
+}
+
 
     window.onload = generateProblem;
   </script>
