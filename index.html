@@ -15,14 +15,21 @@
       margin: 0;
     }
 
-  .container {
+.container {
   text-align: center;
   background-color: #1e1e1e;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   width: 70%;
-  margin: 0 auto; /* centers the container */
+  margin: 0 auto;
+}
+
+/* Apply smaller padding on mobile screens */
+@media (max-width: 600px) {
+  .container {
+    width: 86%; /* 7% padding left and right */
+  }
 }
 
 
