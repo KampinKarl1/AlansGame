@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Math Game</title>
+  <title>Math Money Game</title>
   <style>
     body {
       background-color: #121212;
@@ -21,6 +21,13 @@
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      min-width: 300px;
+    }
+
+    .score {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #03dac6;
     }
 
     .operation {
@@ -54,25 +61,91 @@
     .submit-btn:hover {
       background-color: #00bfa5;
     }
+
+    .result {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="operation">
-      13<br>
-      − 6<br>
-      <hr style="width: 100px; margin: 0.5rem auto; border: 1px solid #444;">
-    </div>
+    <div class="score" id="scoreDisplay">$0</div>
+    <div class="operation" id="operationDisplay"></div>
     <input class="answer" type="number" id="answerInput" placeholder="Your answer">
     <br>
     <button class="submit-btn" onclick="submitAnswer()">Submit</button>
+    <div class="result" id="resultDisplay"></div>
   </div>
 
   <script>
-    function submitAnswer() {
-      const input = document.getElementById("answerInput").value;
-      alert("You entered: " + input);
+    let score = 0;
+    let correctAnswer;
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
+    function generateProblem() {
+      const operators = ['+', '−', '×', '÷'];
+      const operator = operators[getRandomInt(0, operators.length - 1)];
+      let a, b;
+
+      switch (operator) {
+        case '+':
+          a = getRandomInt(1, 20);
+          b = getRandomInt(1, 20);
+          correctAnswer = a + b;
+          break;
+        case '−':
+          a = getRandomInt(5, 20);
+          b = getRandomInt(1, a);
+          correctAnswer = a - b;
+          break;
+        case '×':
+          a = getRandomInt(1, 10);
+          b = getRandomInt(1, 10);
+          correctAnswer = a * b;
+          break;
+        case '÷':
+          b = getRandomInt(1, 10);
+          correctAnswer = getRandomInt(1, 10);
+          a = b * correctAnswer;
+          break;
+      }
+
+      document.getElementById("operationDisplay").innerHTML = `
+        ${a}<br>
+        ${operator} ${b}<br>
+        <hr style="width: 100px; margin: 0.5rem auto; border: 1px solid #444;">
+      `;
+      document.getElementById("answerInput").value = "";
+      document.getElementById("resultDisplay").textContent = "";
+    }
+
+    function submitAnswer() {
+      const userAnswer = parseInt(document.getElementById("answerInput").value, 10);
+      const result = document.getElementById("resultDisplay");
+
+      if (isNaN(userAnswer)) {
+        result.textContent = "❗ Please enter a number.";
+        result.style.color = "orange";
+        return;
+      }
+
+      if (userAnswer === correctAnswer) {
+        result.textContent = "✅ Correct! +$1";
+        result.style.color = "limegreen";
+        score += 1;
+        document.getElementById("scoreDisplay").textContent = `$${score}`;
+        setTimeout(generateProblem, 1000);
+      } else {
+        result.textContent = "❌ Try again!";
+        result.style.color = "red";
+      }
+    }
+
+    window.onload = generateProblem;
   </script>
 </body>
 </html>
