@@ -100,6 +100,53 @@
   background-color: green;
 }
 
+#rangeInputs {
+  margin-bottom: 1rem;
+  color: white;
+}
+
+#rangeInputs label {
+  margin: 0 0.25rem;
+}
+
+#rangeInputs input {
+  font-size: 3rem;
+  width: 30%;
+  height: 5rem;
+  padding: 1rem;
+  margin-right: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+#shop {
+  color: white;
+  text-align: center;
+  font-size: 3rem;
+}
+
+.shop-item {
+  display: inline-block;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0.5rem;
+  width: 50%;
+  height: 40%;
+}
+.shop-item button {
+  font-size: 3rem;
+  padding: 0.5rem;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+.shop-item button:hover {
+  background-color: #45a049;
+}
+
   </style>
 </head>
 <body>
@@ -110,6 +157,14 @@
   <button class="op-btn selected" onclick="operationToggle(2)" data-op="*">×</button>
   <button class="op-btn selected"  onclick="operationToggle(3)" data-op="/">÷</button>
 </div>
+<div id="rangeInputs">
+  <label for="minValue">Min:</label>
+  <input type="number" id="minValue" value="1" />
+
+  <label for="maxValue">Max:</label>
+  <input type="number" id="maxValue" value="99" />
+</div>
+
 
     <div class="score" id="scoreDisplay">$0</div>
     <div class="operation" id="operationDisplay"></div>
@@ -119,12 +174,52 @@
     <div class="result" id="resultDisplay"></div>
   </div>
 
+<div id="shop" style="margin-top: 2rem;">
+  <h2>Monopoly Shop</h2>
+
+  <div class="shop-item">
+    <button onclick="buyItem('house')">🏠 Buy House</button>
+    <p>Price: $100</p>
+    <p>Houses Owned: <span id="houseCount">0</span></p>
+  </div>
+
+  <div class="shop-item">
+    <button onclick="buyItem('hotel')">🏨 Buy Hotel</button>
+    <p>Price: $500</p>
+    <p>Hotels Owned: <span id="hotelCount">0</span></p>
+  </div>
+
+</div>
   <script>
     let score = 0;
     let correctAnswer;
 
     let operators = ['+','−','×','÷'];
 
+    let baseHouseCost = 100;
+    let baseHotelCost = 500;
+    let houses = 0;
+    let hotels = 0;
+
+    function updateShopUI() {
+  document.getElementById("houseCount").textContent = houses;
+  document.getElementById("hotelCount").textContent = hotels;
+  updateScoreUI(); // assumes you already have a score update function
+}
+
+function buyItem(type) {
+  if (type === "house" && score >= baseHouseCost) {
+    score -= baseHouseCost;
+    houses++;
+    updateShopUI();
+  } else if (type === "hotel" && score >= baseHotelCost) {
+    score -= baseHotelCost;
+    hotels++;
+    updateShopUI();
+  } else {
+    alert("Not enough money to buy a " + type + "!");
+  }
+}
 
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -166,6 +261,38 @@
       updateSymbols('+', allowAddition);
     }
 
+
+
+
+  let minValue = parseInt(document.getElementById("minValue").value);
+  let maxValue = parseInt(document.getElementById("maxValue").value);
+
+
+  document.getElementById("minValue").addEventListener("change", (e)=>onChangeValue("minValue", e));
+
+  document.getElementById("maxValue").addEventListener("change", (e)=>onChangeValue("maxValue", e));
+
+    function onChangeValue (caller, val)
+    {
+      const value = parseInt(val.target.value);
+
+      if (isNaN(value))
+        alert ("nan");
+      else if (caller === "minValue")
+        minValue = value;
+      else
+        maxValue = value;
+
+        generateProblem();
+      alert("Changed value to " + val.target.value);
+    }
+
+    function getRandomNumberInRange() {
+  return Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+}
+
+let a, b;
+
     function generateProblem() {
      // const operators = ['+','−','×','÷'];
       let operator = operators[0];
@@ -176,50 +303,37 @@
         operator = operators[rand];
       }
 
-      //const operator = operators[getRandomInt(0, operators.length - 1)];
-      //alert ("Selected " +operator);
-      let a, b;
+      
 
       switch (operator) {
         case '+':
-          a = getRandomInt(1, 20);
-          b = getRandomInt(1, 20);
+          a = getRandomNumberInRange();
+          b = getRandomNumberInRange();
           correctAnswer = a + b;
           break;
         case '−':
-          a = getRandomInt(5, 20);
-          b = getRandomInt(1, a);
-          correctAnswer = a - b;
-          break;
-          case '−':
-          a = getRandomInt(5, 20);
-          b = getRandomInt(1, a);
+          a = getRandomNumberInRange();
+          b = getRandomNumberInRange();
           correctAnswer = a - b;
           break;
         case '×':
-          a = getRandomInt(1, 10);
-          b = getRandomInt(1, 10);
+          a = getRandomNumberInRange();
+          b = getRandomNumberInRange();
           correctAnswer = a * b;
           break;
         case '*':
-          a = getRandomInt(1, 10);
-          b = getRandomInt(1, 10);
+          a = getRandomNumberInRange();
+          b = getRandomNumberInRange();
           correctAnswer = a * b;
           break;
            case '/':
-          b = getRandomInt(1, 10);
-          correctAnswer = getRandomInt(1, 10);
-          a = b * correctAnswer;
-          break;
-
-           case '÷':
-          b = getRandomInt(1, 10);
-          correctAnswer = getRandomInt(1, 10);
+          b = getRandomNumberInRange();
+          correctAnswer = getRandomNumberInRange();
           a = b * correctAnswer;
           break;
         case '÷':
-          b = getRandomInt(1, 10);
-          correctAnswer = getRandomInt(1, 10);
+          b = getRandomInt(1, Math.round( maxValue/10 , 1));
+          correctAnswer = getRandomInt(2, 16);
           a = b * correctAnswer;
           break;
       }
@@ -233,6 +347,14 @@
       document.getElementById("resultDisplay").textContent = "";
     }
 
+    const baseLossOnWrong = 10;
+    const baseScore = 2;
+    function scoreModifiers()
+    {
+      return operators.length + (maxValue/minValue) ;
+    }
+
+
     function submitAnswer() {
       const userAnswer = parseInt(document.getElementById("answerInput").value, 10);
       const result = document.getElementById("resultDisplay");
@@ -244,14 +366,22 @@
       }
 
       if (userAnswer === correctAnswer) {
-        result.textContent = "✅ Correct! +$1";
+        
         result.style.color = "limegreen";
-        score += 1;
-        document.getElementById("scoreDisplay").textContent = `$${score}`;
+        const addScore = baseScore * scoreModifiers();
+        score += addScore;
+        result.textContent = "✅ Correct! +$"+addScore;
+        
+updateScoreUI();
+
         setTimeout(generateProblem, 1000);
       } else {
-        result.textContent = "❌ Try again!";
+        
         result.style.color = "red";
+        score-=baseLossOnWrong;
+        result.textContent = "❌ Try again! Lose $"+baseLossOnWrong;
+
+        updateScoreUI();
       }
     }
 
@@ -275,6 +405,11 @@ button.classList.toggle("selected");
     
   });
 });
+
+function updateScoreUI()
+{
+document.getElementById("scoreDisplay").textContent = `$${score}`;
+}
 
 // Helper: get currently selected operators
 function getSelectedOperators() {
