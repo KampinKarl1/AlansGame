@@ -26,31 +26,33 @@
 }
 
 /* Apply smaller padding on mobile screens */
-@media (max-width: 600px) {
+@media (max-width: 1200px) {
   .container {
     width: 86%; /* 7% padding left and right */
+    height: 92%;
   }
 }
 
 
     .score {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
+      font-size: 10rem;
+      margin-bottom: 2rem;
       color: #03dac6;
     }
 
     .operation {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      line-height: 2.5rem;
+      font-size: 5rem;
+      margin-bottom: 5rem;
+      line-height: 5rem;
     }
 
     .answer {
-      font-size: 1.2rem;
+      font-size: 7rem;
       padding: 0.5rem;
       border-radius: 5px;
       border: none;
-      width: 100px;
+      width: 90%;
+      height: 11rem;
       text-align: center;
       background-color: #2a2a2a;
       color: white;
@@ -59,10 +61,12 @@
     .submit-btn {
       margin-top: 1rem;
       padding: 0.5rem 1rem;
-      font-size: 1rem;
+      font-size: 5rem;
       background-color: #03dac6;
       color: #000;
       border: none;
+      width: 50%;
+      height: 10rem;
       border-radius: 5px;
       cursor: pointer;
     }
@@ -81,9 +85,11 @@
 
 .op-btn {
   padding: 0.5rem 1rem;
-  font-size: 1.2rem;
+  font-size: 7rem;
   margin: 0.25rem;
   border: none;
+  width: 20%;
+  height: 8rem;
   border-radius: 5px;
   background-color: grey;
   color: white;
@@ -99,10 +105,10 @@
 <body>
   <div class="container">
     <div id="operatorButtons">
-  <button class="op-btn selected" data-op="+">+</button>
-  <button class="op-btn selected" data-op="-">−</button>
-  <button class="op-btn selected" data-op="*">×</button>
-  <button class="op-btn selected" data-op="/">÷</button>
+  <button class="op-btn selected" onclick="additionToggle()" data-op="+">+</button>
+  <button class="op-btn selected" onclick="operationToggle(1)" data-op="-">−</button>
+  <button class="op-btn selected" onclick="operationToggle(2)" data-op="*">×</button>
+  <button class="op-btn selected"  onclick="operationToggle(3)" data-op="/">÷</button>
 </div>
 
     <div class="score" id="scoreDisplay">$0</div>
@@ -116,16 +122,62 @@
   <script>
     let score = 0;
     let correctAnswer;
-const ops = getSelectedOperators();
-const randomOp = ops[Math.floor(Math.random() * ops.length)];
+
+    let operators = ['+','−','×','÷'];
+
 
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    let allowAddition = true,
+    allowSubtraction = true,
+    allowMult = true,
+    allowDiv = true;
+
+    function removeSymbolFromOperators(symbol)
+    {
+      for (let i = 0; i < operators.length;i++)
+        if (operators[i] === symbol)
+          operators.splice(i,1);
+    }
+
+    function updateSymbols (symbolChange, allowed){
+      if (!allowed)
+        removeSymbolFromOperators(symbolChange);
+      else if (!operators.includes(symbolChange))
+        operators.push(symbolChange);
+    }
+
+    let allowed = [true, true, true, true];
+    const CONST_OPERATORS = ['+','−','×','÷'];
+
+    function operationToggle(opInd)
+    {
+      allowed[opInd] = !allowed[opInd];
+
+      updateSymbols(CONST_OPERATORS[opInd], allowed[opInd]);
+    }
+
+    function additionToggle()
+    { 
+      allowAddition = !allowAddition;
+
+      updateSymbols('+', allowAddition);
+    }
+
     function generateProblem() {
-      const operators = ['+', '−', '×', '÷'];
-      const operator = operators[getRandomInt(0, operators.length - 1)];
+     // const operators = ['+','−','×','÷'];
+      let operator = operators[0];
+      if (operators.length > 1)
+      {
+        let rand = getRandomInt(0, operators.length-1);
+        
+        operator = operators[rand];
+      }
+
+      //const operator = operators[getRandomInt(0, operators.length - 1)];
+      //alert ("Selected " +operator);
       let a, b;
 
       switch (operator) {
@@ -139,10 +191,31 @@ const randomOp = ops[Math.floor(Math.random() * ops.length)];
           b = getRandomInt(1, a);
           correctAnswer = a - b;
           break;
+          case '−':
+          a = getRandomInt(5, 20);
+          b = getRandomInt(1, a);
+          correctAnswer = a - b;
+          break;
         case '×':
           a = getRandomInt(1, 10);
           b = getRandomInt(1, 10);
           correctAnswer = a * b;
+          break;
+        case '*':
+          a = getRandomInt(1, 10);
+          b = getRandomInt(1, 10);
+          correctAnswer = a * b;
+          break;
+           case '/':
+          b = getRandomInt(1, 10);
+          correctAnswer = getRandomInt(1, 10);
+          a = b * correctAnswer;
+          break;
+
+           case '÷':
+          b = getRandomInt(1, 10);
+          correctAnswer = getRandomInt(1, 10);
+          a = b * correctAnswer;
           break;
         case '÷':
           b = getRandomInt(1, 10);
@@ -193,9 +266,13 @@ operatorButtons.forEach(button => {
       alert("At least one operator must remain selected.");
       return;
     }
+button.classList.toggle("selected");
+    ops = getSelectedOperators();
+
+    generateProblem();
 
     // Toggle selection
-    button.classList.toggle("selected");
+    
   });
 });
 
