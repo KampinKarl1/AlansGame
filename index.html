@@ -152,10 +152,10 @@
 <body>
   <div class="container">
     <div id="operatorButtons">
-  <button class="op-btn selected" onclick="additionToggle()" data-op="+">+</button>
-  <button class="op-btn selected" onclick="operationToggle(1)" data-op="-">−</button>
-  <button class="op-btn selected" onclick="operationToggle(2)" data-op="*">×</button>
-  <button class="op-btn selected"  onclick="operationToggle(3)" data-op="/">÷</button>
+  <button class="op-btn selected" onclick="operationToggle(0)" data-op="+">+</button>
+  <button class="op-btn " onclick="operationToggle(1)" data-op="-">−</button>
+  <button class="op-btn " onclick="operationToggle(2)" data-op="*">×</button>
+  <button class="op-btn "  onclick="operationToggle(3)" data-op="/">÷</button>
 </div>
 <div id="rangeInputs">
   <label for="minValue">Min:</label>
@@ -194,7 +194,7 @@
     let score = 0;
     let correctAnswer;
 
-    let operators = ['+','−','×','÷'];
+    
 
     let baseHouseCost = 100;
     let baseHotelCost = 500;
@@ -225,10 +225,11 @@ function buyItem(type) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    let allowAddition = true,
-    allowSubtraction = true,
-    allowMult = true,
-    allowDiv = true;
+
+let allowed = [true, false, false, false];
+    const CONST_OPERATORS = ['+','−','×','÷'];
+let operators = ['+'];//,'−','×','÷'];
+    let allowAddition = true;
 
     function removeSymbolFromOperators(symbol)
     {
@@ -244,8 +245,7 @@ function buyItem(type) {
         operators.push(symbolChange);
     }
 
-    let allowed = [true, true, true, true];
-    const CONST_OPERATORS = ['+','−','×','÷'];
+    
 
     function operationToggle(opInd)
     {
